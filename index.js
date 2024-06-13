@@ -36,7 +36,7 @@ app.use(
 
 app.use(
   cors({
-    origin: ["http://192.168.100.83:3000", "http://localhost:3000", "https://renwa-frontend.vercel.app"],
+    origin: ["http://localhost:3000", "https://renwa-frontend.vercel.app"],
     credentials: true,
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type", "Authorization"],

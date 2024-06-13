@@ -17,6 +17,8 @@ export const Login = async (req, res) => {
     if (!match) {
       return res.status(400).json({ msg: "Wrong Password" });
     }
+    req.session.userId = user.uuid;
+
     const userId = user.id;
     const name = user.name;
     const accessToken = jwt.sign(

@@ -1,23 +1,14 @@
-import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
-
-dotenv.config();
+import jwt from 'jsonwebtoken';
 
 export const verifyToken = (req, res, next) => {
-  // Get token from Authorization header
-  const token = req.headers.authorization?.split(" ")[1];
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
 
-  if (!token) {
-    return res.status(401).json({ message: "No token provided" });
-  }
+  if (token == null) return res.sendStatus(401); // If there's no token, return unauthorized
 
-  try {
-    // Verify token using JWT secret key
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // Attach decoded user information to request object
-    next();
-  } catch (error) {
-    console.error("Token verification error:", error);
-    return res.status(401).json({ message: "Unauthorized" });
-  }
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403); // If the token is invalid, return forbidden
+    req.user = user;
+    next(); // Proceed to the next middleware or route handler
+  });
 };

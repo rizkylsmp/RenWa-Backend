@@ -1,5 +1,6 @@
 import User from "../models/UserModel.js";
 import argon2 from "argon2";
+import jwt from "jsonwebtoken";
 
 export const Login = async (req, res) => {
   try {
@@ -16,7 +17,18 @@ export const Login = async (req, res) => {
     if (!match) {
       return res.status(400).json({ msg: "Wrong Password" });
     }
-    req.session.userId = user.uuid;
+    const userId = user.id;
+    const name = user.name;
+    const accessToken = jwt.sign(
+      { userId, name },
+      process.env.ACCESS_TOKEN_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
+
+    res.json({ accessToken });
+
     const { uuid, username, nama, jenisKelamin, role } = user;
     res.status(200).json({ uuid, username, nama, jenisKelamin, role });
   } catch (error) {

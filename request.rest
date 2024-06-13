@@ -35,7 +35,7 @@ DELETE http://localhost:5000/users/0ffacec2-2a62-4012-88f8-58db4ea3fe9b
 curl -X POST http://localhost:5000/login \
 -H "Content-Type: application/json" \
 -d '{
-    "username": "admin ",
+    "username": "admin",
     "password": "admin"
 }'
 

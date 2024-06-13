@@ -22,47 +22,41 @@ const store = new sessionStore({
 //   await db.sync();
 // })();
 
-try {
-  app.use(
-    session({
-      secret: process.env.SESS_SECRET,
-      resave: false,
-      saveUninitialized: true,
-      store: store,
-      cookie: {
-        secure: "auto",
-      },
-    })
-  );
+app.use(
+  session({
+    secret: process.env.SESS_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    store: store,
+    cookie: {
+      secure: "auto",
+    },
+  })
+);
 
-  app.use(
-    cors({
-      credentials: true,
-      origin: "https://renwa-frontend.vercel.app/",
-    //   origin: "http://192.168.100.83/:3000",
-    })
-  );
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    origin: "https://renwa-frontend-181ztqo36-rizkylsmps.vercel.app",
+    credentials: true,
+  })
+);
+app.use(express.json());
+app.use(UserRoute);
+app.use(PenjualanRoute);
+app.use(AuthRoute);
 
-  app.use(express.json());
-  app.use(UserRoute);
-  app.use(PenjualanRoute);
-  app.use(AuthRoute);
+// store.sync();
 
-  // store.sync();
+app.listen(process.env.APP_PORT, () => {
+  console.log(`Server running on port ${process.env.APP_PORT}`);
+});
 
-  app.listen(process.env.PORT, () => {
-    console.log(`Server running on port ${process.env.PORT}`);
-  });
-
-  (async () => {
-    try {
-      await db.authenticate();
-      console.log("Database connected...");
-    } catch (error) {
-      console.error("Unable to connect to the database:", error);
-    }
-  })();
-  
-} catch (error) {
-  console.error("Error initializing the server:", error);
-}
+(async () => {
+  try {
+    await db.authenticate();
+    console.log("Database connected...");
+  } catch (error) {
+    console.error("Unable to connect to the database:", error);
+  }
+})();

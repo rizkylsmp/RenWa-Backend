@@ -6,6 +6,10 @@ import db from "./config/Database.js";
 import SequelizeStore from "connect-session-sequelize";
 import UserRoute from "./routes/UserRoute.js";
 import PenjualanRoute from "./routes/PenjualanRoute.js";
+import BarangMasukRoute from "./routes/BarangMasukRoute.js";
+import BarangKeluarRoute from "./routes/BarangKeluarRoute.js";
+import TerimaBarangRoute from "./routes/TerimaBarangRoute.js";
+import KembaliBarangRoute from "./routes/KembaliBarangRoute.js";
 import AuthRoute from "./routes/AuthRoute.js";
 
 dotenv.config();
@@ -38,14 +42,19 @@ app.use(
   cors({
     origin: ["http://localhost:3000", "https://renwa-frontend.vercel.app"],
     credentials: true,
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 app.use(express.json());
+
+app.use(AuthRoute);
 app.use(UserRoute);
 app.use(PenjualanRoute);
-app.use(AuthRoute);
+app.use(BarangMasukRoute);
+app.use(BarangKeluarRoute);
+app.use(TerimaBarangRoute);
+app.use(KembaliBarangRoute);
 
 // store.sync();
 

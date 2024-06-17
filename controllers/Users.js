@@ -1,6 +1,7 @@
 import User from "../models/UserModel.js";
 import argon2 from "argon2";
 
+// Mengambil semua pengguna
 export const getUsers = async (req, res) => {
   try {
     const response = await User.findAll({
@@ -12,6 +13,7 @@ export const getUsers = async (req, res) => {
   }
 };
 
+// Mengambil pengguna berdasarkan ID
 export const getUserById = async (req, res) => {
   try {
     const response = await User.findOne({
@@ -26,6 +28,7 @@ export const getUserById = async (req, res) => {
   }
 };
 
+// Membuat pengguna baru
 export const createUser = async (req, res) => {
   const { username, nama, jenisKelamin, password, confPassword, role } =
     req.body;
@@ -48,6 +51,7 @@ export const createUser = async (req, res) => {
   }
 };
 
+// Mengupdate pengguna
 export const updateUser = async (req, res) => {
   const user = await User.findOne({
     where: {
@@ -88,6 +92,7 @@ export const updateUser = async (req, res) => {
   }
 };
 
+// Menghapus pengguna
 export const deleteUser = async (req, res) => {
   const user = await User.findOne({
     where: {

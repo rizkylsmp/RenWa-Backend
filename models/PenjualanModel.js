@@ -15,7 +15,7 @@ const Penjualan = db.define(
         notEmpty: true,
       },
     },
-    noTrasaksi: {
+    noTransaksi: {
       type: DataTypes.STRING,
       defaultValue: DataTypes.UUIDV4,
       allowNull: false,
@@ -30,15 +30,21 @@ const Penjualan = db.define(
         notEmpty: true,
       },
     },
-    nama: {
+    barang: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
         notEmpty: true,
-        len: [3, 100],
       },
     },
-    pemasukan: {
+    jumlah: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+    total: {
       type: DataTypes.INTEGER,
       allowNull: false,
       validate: {

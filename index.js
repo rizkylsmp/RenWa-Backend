@@ -19,7 +19,7 @@ const app = express();
 const sessionStore = SequelizeStore(session.Store);
 
 const store = new sessionStore({
-  db: db,
+    db: db,
 });
 
 // (async () => {
@@ -33,16 +33,20 @@ app.use(
     saveUninitialized: true,
     store: store,
     cookie: {
-      secure: "auto",
+      secure: false,
+      httpOnly: true,
+      sameSite: 'lax', // Atur sesuai kebutuhan aplikasi Anda
+      maxAge: 24 * 60 * 60 * 1000, // Durasi sesi dalam milidetik (contoh: 1 hari)
     },
   })
 );
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://renwa-frontend.vercel.app"],
+    origin: ["http://localhost:3000", "https://rizkylsmp.my.id"],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
-    methods: ["GET", "POST", "PATCH", "DELETE"],
+    optionsSuccessStatus: 204,
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );

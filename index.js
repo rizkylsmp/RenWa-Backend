@@ -35,8 +35,8 @@ app.use(
     cookie: {
       secure: false,
       httpOnly: true,
-      sameSite: 'lax', // Atur sesuai kebutuhan aplikasi Anda
-      maxAge: 24 * 60 * 60 * 1000, // Durasi sesi dalam milidetik (contoh: 1 hari)
+      sameSite: 'lax',
+      maxAge: 24 * 60 * 60 * 1000,
     },
   })
 );

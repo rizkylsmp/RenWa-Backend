@@ -37,13 +37,6 @@ const Penjualan = db.define(
         notEmpty: true,
       },
     },
-    jumlah: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
-    },
     total: {
       type: DataTypes.INTEGER,
       allowNull: false,

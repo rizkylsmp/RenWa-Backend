@@ -7,14 +7,7 @@ export const getKembaliBarang = async (req, res) => {
     let response;
     if (req.role === "admin") {
       response = await KembaliBarang.findAll({
-        attributes: [
-          "uuid",
-          "noTransaksi",
-          "tanggal",
-          "barang",
-          "jumlah",
-          "total",
-        ],
+        attributes: ["uuid", "kodeBarang", "tanggal", "barang", "jumlah"],
         include: [
           {
             model: User,
@@ -24,14 +17,7 @@ export const getKembaliBarang = async (req, res) => {
       });
     } else {
       response = await KembaliBarang.findAll({
-        attributes: [
-          "uuid",
-          "noTransaksi",
-          "tanggal",
-          "barang",
-          "jumlah",
-          "total",
-        ],
+        attributes: ["uuid", "kodeBarang", "tanggal", "barang", "jumlah"],
         where: {
           userId: req.userId,
         },
@@ -61,14 +47,7 @@ export const getKembaliBarangById = async (req, res) => {
     let response;
     if (req.role === "admin") {
       response = await KembaliBarang.findOne({
-        attributes: [
-          "uuid",
-          "noTransaksi",
-          "tanggal",
-          "barang",
-          "jumlah",
-          "total",
-        ],
+        attributes: ["uuid", "kodeBarang", "tanggal", "barang", "jumlah"],
         where: {
           id: kembaliBarang.id,
         },
@@ -81,14 +60,7 @@ export const getKembaliBarangById = async (req, res) => {
       });
     } else {
       response = await KembaliBarang.findOne({
-        attributes: [
-          "uuid",
-          "noTransaksi",
-          "tanggal",
-          "barang",
-          "jumlah",
-          "total",
-        ],
+        attributes: ["uuid", "kodeBarang", "tanggal", "barang", "jumlah"],
         where: {
           [Op.and]: [{ id: kembaliBarang.id }, { userId: req.userId }],
         },
@@ -107,14 +79,13 @@ export const getKembaliBarangById = async (req, res) => {
 };
 
 export const createKembaliBarang = async (req, res) => {
-  const { noTransaksi, tanggal, barang, jumlah, total } = req.body;
+  const { kodeBarang, tanggal, barang, jumlah } = req.body;
   try {
     await KembaliBarang.create({
-      noTransaksi: noTransaksi,
+      kodeBarang: kodeBarang,
       tanggal: tanggal,
       barang: barang,
       jumlah: jumlah,
-      total: total,
       userId: req.userId,
     });
     res.status(201).json({ msg: "Data Created Successfuly" });
@@ -132,10 +103,10 @@ export const updateKembaliBarang = async (req, res) => {
     });
     if (!kembaliBarang)
       return res.status(404).json({ msg: "Data tidak ditemukan" });
-    const { noTransaksi, tanggal, barang, jumlah, total } = req.body;
+    const { kodeBarang, tanggal, barang, jumlah } = req.body;
     if (req.role === "admin") {
       await KembaliBarang.update(
-        { noTransaksi, tanggal, barang, jumlah, total },
+        { kodeBarang, tanggal, barang, jumlah },
         {
           where: {
             id: kembaliBarang.id,
@@ -146,7 +117,7 @@ export const updateKembaliBarang = async (req, res) => {
       if (req.userId !== kembaliBarang.userId)
         return res.status(403).json({ msg: "Akses terlarang" });
       await KembaliBarang.update(
-        { noTransaksi, tanggal, barang, jumlah, total },
+        { kodeBarang, tanggal, barang, jumlah },
         {
           where: {
             [Op.and]: [{ id: kembaliBarang.id }, { userId: req.userId }],
@@ -169,7 +140,7 @@ export const deleteKembaliBarang = async (req, res) => {
     });
     if (!kembaliBarang)
       return res.status(404).json({ msg: "Data tidak ditemukan" });
-    const { noTransaksi, tanggal, barang, jumlah, total } = req.body;
+    const { kodeBarang, tanggal, barang, jumlah } = req.body;
     if (req.role === "admin") {
       await KembaliBarang.destroy({
         where: {

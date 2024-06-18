@@ -7,14 +7,7 @@ export const getPenjualan = async (req, res) => {
     let response;
     if (req.role === "admin") {
       response = await Penjualan.findAll({
-        attributes: [
-          "uuid",
-          "noTransaksi",
-          "tanggal",
-          "barang",
-          "jumlah",
-          "total",
-        ],
+        attributes: ["uuid", "noTransaksi", "tanggal", "barang", "total"],
         include: [
           {
             model: User,
@@ -24,14 +17,7 @@ export const getPenjualan = async (req, res) => {
       });
     } else {
       response = await Penjualan.findAll({
-        attributes: [
-          "uuid",
-          "noTransaksi",
-          "tanggal",
-          "barang",
-          "jumlah",
-          "total",
-        ],
+        attributes: ["uuid", "noTransaksi", "tanggal", "barang", "total"],
         where: {
           userId: req.userId,
         },
@@ -61,14 +47,7 @@ export const getPenjualanById = async (req, res) => {
     let response;
     if (req.role === "admin") {
       response = await Penjualan.findOne({
-        attributes: [
-          "uuid",
-          "noTransaksi",
-          "tanggal",
-          "barang",
-          "jumlah",
-          "total",
-        ],
+        attributes: ["uuid", "noTransaksi", "tanggal", "barang", "total"],
         where: {
           id: penjualan.id,
         },
@@ -81,14 +60,7 @@ export const getPenjualanById = async (req, res) => {
       });
     } else {
       response = await Penjualan.findOne({
-        attributes: [
-          "uuid",
-          "noTransaksi",
-          "tanggal",
-          "barang",
-          "jumlah",
-          "total",
-        ],
+        attributes: ["uuid", "noTransaksi", "tanggal", "barang", "total"],
         where: {
           [Op.and]: [{ id: penjualan.id }, { userId: req.userId }],
         },
@@ -107,13 +79,12 @@ export const getPenjualanById = async (req, res) => {
 };
 
 export const createPenjualan = async (req, res) => {
-  const { noTransaksi, tanggal, barang, jumlah, total } = req.body;
+  const { noTransaksi, tanggal, barang, total } = req.body;
   try {
     await Penjualan.create({
       noTransaksi: noTransaksi,
       tanggal: tanggal,
       barang: barang,
-      jumlah: jumlah,
       total: total,
       userId: req.userId,
     });
@@ -132,10 +103,10 @@ export const updatePenjualan = async (req, res) => {
     });
     if (!penjualan)
       return res.status(404).json({ msg: "Data tidak ditemukan" });
-    const { noTransaksi, tanggal, barang, jumlah, total } = req.body;
+    const { noTransaksi, tanggal, barang, total } = req.body;
     if (req.role === "admin") {
       await Penjualan.update(
-        { noTransaksi, tanggal, barang, jumlah, total },
+        { noTransaksi, tanggal, barang, total },
         {
           where: {
             id: penjualan.id,
@@ -146,7 +117,7 @@ export const updatePenjualan = async (req, res) => {
       if (req.userId !== penjualan.userId)
         return res.status(403).json({ msg: "Akses terlarang" });
       await Penjualan.update(
-        { noTransaksi, tanggal, barang, jumlah, total },
+        { noTransaksi, tanggal, barang, total },
         {
           where: {
             [Op.and]: [{ id: penjualan.id }, { userId: req.userId }],
@@ -169,7 +140,7 @@ export const deletePenjualan = async (req, res) => {
     });
     if (!penjualan)
       return res.status(404).json({ msg: "Data tidak ditemukan" });
-    const { noTransaksi, tanggal, barang, jumlah, total } = req.body;
+    const { noTransaksi, tanggal, barang, total } = req.body;
     if (req.role === "admin") {
       await Penjualan.destroy({
         where: {

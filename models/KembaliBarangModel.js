@@ -15,7 +15,7 @@ const KembaliBarang = db.define(
         notEmpty: true,
       },
     },
-    noTransaksi: {
+    kodeBarang: {
       type: DataTypes.STRING,
       defaultValue: DataTypes.UUIDV4,
       allowNull: false,
@@ -38,13 +38,6 @@ const KembaliBarang = db.define(
       },
     },
     jumlah: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
-    },
-    total: {
       type: DataTypes.INTEGER,
       allowNull: false,
       validate: {

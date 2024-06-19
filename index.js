@@ -11,6 +11,7 @@ import BarangKeluarRoute from "./routes/BarangKeluarRoute.js";
 import TerimaBarangRoute from "./routes/TerimaBarangRoute.js";
 import KembaliBarangRoute from "./routes/KembaliBarangRoute.js";
 import AuthRoute from "./routes/AuthRoute.js";
+import StatsRoute from "./routes/StatsRoute.js";
 
 dotenv.config();
 
@@ -19,7 +20,7 @@ const app = express();
 const sessionStore = SequelizeStore(session.Store);
 
 const store = new sessionStore({
-    db: db,
+  db: db,
 });
 
 // (async () => {
@@ -35,7 +36,7 @@ app.use(
     cookie: {
       secure: false,
       httpOnly: true,
-      sameSite: 'lax',
+      sameSite: "lax",
       maxAge: 24 * 60 * 60 * 1000,
     },
   })
@@ -44,7 +45,7 @@ app.use(
 app.use(
   cors({
     origin: ["http://localhost:3000", "https://rizkylsmp.my.id"],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
     optionsSuccessStatus: 204,
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -59,8 +60,9 @@ app.use(BarangMasukRoute);
 app.use(BarangKeluarRoute);
 app.use(TerimaBarangRoute);
 app.use(KembaliBarangRoute);
+app.use(StatsRoute);
 
-// store.sync();
+store.sync();
 
 app.listen(process.env.APP_PORT, () => {
   console.log(`Server running on port ${process.env.APP_PORT}`);

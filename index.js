@@ -44,7 +44,7 @@ app.use(
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://rizkylsmp.my.id"],
+    origin: ["http://localhost:3000", "https://butikrenwa.xyzn"],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
     optionsSuccessStatus: 204,
@@ -62,7 +62,7 @@ app.use(TerimaBarangRoute);
 app.use(KembaliBarangRoute);
 app.use(StatsRoute);
 
-store.sync();
+// store.sync();
 
 app.listen(process.env.APP_PORT, () => {
   console.log(`Server running on port ${process.env.APP_PORT}`);

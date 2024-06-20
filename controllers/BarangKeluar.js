@@ -1,4 +1,5 @@
 import BarangKeluar from "../models/BarangKeluarModel.js";
+import TerimaBarang from "../models/TerimaBarangModel.js";
 import User from "../models/UserModel.js";
 import { Op } from "sequelize";
 
@@ -11,7 +12,11 @@ export const getBarangKeluar = async (req, res) => {
         include: [
           {
             model: User,
-            attributes: ["nama", "username"],
+            attributes: ["username"],
+          },
+          {
+            model: User,
+            attributes: ["username"],
           },
         ],
       });
@@ -24,7 +29,11 @@ export const getBarangKeluar = async (req, res) => {
         include: [
           {
             model: User,
-            attributes: ["nama", "username"],
+            attributes: ["username"],
+          },
+          {
+            model: User,
+            attributes: ["username"],
           },
         ],
       });
@@ -79,16 +88,36 @@ export const getBarangKeluarById = async (req, res) => {
 };
 
 export const createBarangKeluar = async (req, res) => {
-  const { kodeBarang, tanggal, barang, jumlah } = req.body;
+  const { kodeBarang, tanggal, barang, jumlah, tujuan } = req.body;
   try {
-    await BarangKeluar.create({
+    const userTujuan = await User.findOne({
+      where: {
+        username: tujuan,
+      },
+    });
+    if (!userTujuan) {
+      return res.status(404).json({ msg: "User tujuan tidak ditemukan" });
+    }
+
+    const barangKeluar = await BarangKeluar.create({
       kodeBarang: kodeBarang,
       tanggal: tanggal,
       barang: barang,
       jumlah: jumlah,
       userId: req.userId,
+      tujuan: userTujuan.id,
     });
-    res.status(201).json({ msg: "Data Created Successfuly" });
+
+    await TerimaBarang.create({
+      kodeBarang: kodeBarang,
+      tanggal: tanggal,
+      barang: barang,
+      jumlah: jumlah,
+      userId: userTujuan.id,
+      barangKeluarId: barangKeluar.id,
+    });
+
+    res.status(201).json({ msg: "Data Created Successfully" });
   } catch (error) {
     res.status(500).json({ msg: error.message });
   }
@@ -103,7 +132,7 @@ export const updateBarangKeluar = async (req, res) => {
     });
     if (!barangKeluar)
       return res.status(404).json({ msg: "Data tidak ditemukan" });
-    const { kodeBarang, tanggal, barang, jumlah  } = req.body;
+    const { kodeBarang, tanggal, barang, jumlah } = req.body;
     if (req.role === "admin") {
       await BarangKeluar.update(
         { kodeBarang, tanggal, barang, jumlah },
@@ -117,7 +146,7 @@ export const updateBarangKeluar = async (req, res) => {
       if (req.userId !== barangKeluar.userId)
         return res.status(403).json({ msg: "Akses terlarang" });
       await BarangKeluar.update(
-        { kodeBarang, tanggal, barang, jumlah},
+        { kodeBarang, tanggal, barang, jumlah },
         {
           where: {
             [Op.and]: [{ id: barangKeluar.id }, { userId: req.userId }],
@@ -140,7 +169,7 @@ export const deleteBarangKeluar = async (req, res) => {
     });
     if (!barangKeluar)
       return res.status(404).json({ msg: "Data tidak ditemukan" });
-    const { kodeBarang, tanggal, barang, jumlah  } = req.body;
+    const { kodeBarang, tanggal, barang, jumlah } = req.body;
     if (req.role === "admin") {
       await BarangKeluar.destroy({
         where: {

@@ -51,6 +51,10 @@ const TerimaBarang = db.define(
         notEmpty: true,
       },
     },
+    barangKeluarId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
   },
   {
     freezeTableName: true,

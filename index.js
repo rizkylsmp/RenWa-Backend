@@ -23,9 +23,9 @@ const store = new sessionStore({
   db: db,
 });
 
-// (async () => {
-//   await db.sync();
-// })();
+(async () => {
+  await db.sync();
+})();
 
 app.use(
   session({
@@ -35,7 +35,6 @@ app.use(
     store: store,
     cookie: {
       secure: false,
-      httpOnly: true,
       sameSite: "lax",
       maxAge: 24 * 60 * 60 * 1000,
     },
@@ -62,7 +61,7 @@ app.use(TerimaBarangRoute);
 app.use(KembaliBarangRoute);
 app.use(StatsRoute);
 
-// store.sync();
+store.sync();
 
 app.listen(process.env.APP_PORT, () => {
   console.log(`Server running on port ${process.env.APP_PORT}`);

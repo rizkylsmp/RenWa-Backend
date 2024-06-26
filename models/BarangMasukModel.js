@@ -44,6 +44,13 @@ const BarangMasuk = db.define(
         notEmpty: true,
       },
     },
+    dari: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,

@@ -1,5 +1,4 @@
 import BarangKeluar from "../models/BarangKeluarModel.js";
-import TerimaBarang from "../models/TerimaBarangModel.js";
 import User from "../models/UserModel.js";
 import { Op } from "sequelize";
 
@@ -8,12 +7,15 @@ export const getBarangKeluar = async (req, res) => {
     let response;
     if (req.role === "admin") {
       response = await BarangKeluar.findAll({
-        attributes: ["uuid", "kodeBarang", "tanggal", "barang", "jumlah"],
+        attributes: [
+          "uuid",
+          "kodeBarang",
+          "tanggal",
+          "barang",
+          "jumlah",
+          "kepada",
+        ],
         include: [
-          {
-            model: User,
-            attributes: ["username"],
-          },
           {
             model: User,
             attributes: ["username"],
@@ -22,15 +24,18 @@ export const getBarangKeluar = async (req, res) => {
       });
     } else {
       response = await BarangKeluar.findAll({
-        attributes: ["uuid", "kodeBarang", "tanggal", "barang", "jumlah"],
+        attributes: [
+          "uuid",
+          "kodeBarang",
+          "tanggal",
+          "barang",
+          "jumlah",
+          "kepada",
+        ],
         where: {
           userId: req.userId,
         },
         include: [
-          {
-            model: User,
-            attributes: ["username"],
-          },
           {
             model: User,
             attributes: ["username"],
@@ -56,7 +61,14 @@ export const getBarangKeluarById = async (req, res) => {
     let response;
     if (req.role === "admin") {
       response = await BarangKeluar.findOne({
-        attributes: ["uuid", "kodeBarang", "tanggal", "barang", "jumlah"],
+        attributes: [
+          "uuid",
+          "kodeBarang",
+          "tanggal",
+          "barang",
+          "jumlah",
+          "kepada",
+        ],
         where: {
           id: barangKeluar.id,
         },
@@ -69,7 +81,14 @@ export const getBarangKeluarById = async (req, res) => {
       });
     } else {
       response = await BarangKeluar.findOne({
-        attributes: ["uuid", "kodeBarang", "tanggal", "barang", "jumlah"],
+        attributes: [
+          "uuid",
+          "kodeBarang",
+          "tanggal",
+          "barang",
+          "jumlah",
+          "kepada",
+        ],
         where: {
           [Op.and]: [{ id: barangKeluar.id }, { userId: req.userId }],
         },
@@ -88,33 +107,15 @@ export const getBarangKeluarById = async (req, res) => {
 };
 
 export const createBarangKeluar = async (req, res) => {
-  const { kodeBarang, tanggal, barang, jumlah, tujuan } = req.body;
+  const { kodeBarang, tanggal, barang, jumlah, kepada } = req.body;
   try {
-    const userTujuan = await User.findOne({
-      where: {
-        username: tujuan,
-      },
-    });
-    if (!userTujuan) {
-      return res.status(404).json({ msg: "User tujuan tidak ditemukan" });
-    }
-
-    const barangKeluar = await BarangKeluar.create({
+    await BarangKeluar.create({
       kodeBarang: kodeBarang,
       tanggal: tanggal,
       barang: barang,
       jumlah: jumlah,
+      kepada: kepada,
       userId: req.userId,
-      tujuan: userTujuan.id,
-    });
-
-    await TerimaBarang.create({
-      kodeBarang: kodeBarang,
-      tanggal: tanggal,
-      barang: barang,
-      jumlah: jumlah,
-      userId: userTujuan.id,
-      barangKeluarId: barangKeluar.id,
     });
 
     res.status(201).json({ msg: "Data Created Successfully" });
@@ -132,10 +133,10 @@ export const updateBarangKeluar = async (req, res) => {
     });
     if (!barangKeluar)
       return res.status(404).json({ msg: "Data tidak ditemukan" });
-    const { kodeBarang, tanggal, barang, jumlah } = req.body;
+    const { kodeBarang, tanggal, barang, jumlah, kepada } = req.body;
     if (req.role === "admin") {
       await BarangKeluar.update(
-        { kodeBarang, tanggal, barang, jumlah },
+        { kodeBarang, tanggal, barang, jumlah, kepada },
         {
           where: {
             id: barangKeluar.id,
@@ -146,7 +147,7 @@ export const updateBarangKeluar = async (req, res) => {
       if (req.userId !== barangKeluar.userId)
         return res.status(403).json({ msg: "Akses terlarang" });
       await BarangKeluar.update(
-        { kodeBarang, tanggal, barang, jumlah },
+        { kodeBarang, tanggal, barang, jumlah, kepada },
         {
           where: {
             [Op.and]: [{ id: barangKeluar.id }, { userId: req.userId }],
@@ -169,7 +170,7 @@ export const deleteBarangKeluar = async (req, res) => {
     });
     if (!barangKeluar)
       return res.status(404).json({ msg: "Data tidak ditemukan" });
-    const { kodeBarang, tanggal, barang, jumlah } = req.body;
+    const { kodeBarang, tanggal, barang, jumlah, kepada } = req.body;
     if (req.role === "admin") {
       await BarangKeluar.destroy({
         where: {

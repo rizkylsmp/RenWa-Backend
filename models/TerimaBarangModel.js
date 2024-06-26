@@ -44,16 +44,19 @@ const TerimaBarang = db.define(
         notEmpty: true,
       },
     },
+    dari: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        notEmpty: true,
+      },
+    },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
         notEmpty: true,
       },
-    },
-    barangKeluarId: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
     },
   },
   {

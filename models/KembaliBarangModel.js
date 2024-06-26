@@ -44,6 +44,13 @@ const KembaliBarang = db.define(
         notEmpty: true,
       },
     },
+    kepada: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        notEmpty: true,
+      },
+    },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,

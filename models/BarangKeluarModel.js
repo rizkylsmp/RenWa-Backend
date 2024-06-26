@@ -45,14 +45,14 @@ const BarangKeluar = db.define(
         notEmpty: true,
       },
     },
-    userId: {
-      type: DataTypes.INTEGER,
+    kepada: {
+      type: DataTypes.STRING,
       allowNull: false,
       validate: {
         notEmpty: true,
       },
     },
-    tujuan: {
+    userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
@@ -65,13 +65,7 @@ const BarangKeluar = db.define(
   }
 );
 
+Users.hasMany(BarangKeluar);
 BarangKeluar.belongsTo(Users, { foreignKey: "userId" });
-BarangKeluar.belongsTo(Users, { foreignKey: "tujuan" });
-
-Users.hasMany(BarangKeluar, { foreignKey: "userId" });
-Users.hasMany(BarangKeluar, { foreignKey: "tujuan" });
-
-BarangKeluar.hasMany(TerimaBarang, { foreignKey: "barangKeluarId" });
-TerimaBarang.belongsTo(BarangKeluar, { foreignKey: "barangKeluarId" });
 
 export default BarangKeluar;

@@ -52,6 +52,9 @@ const BarangKeluar = db.define(
         notEmpty: true,
       },
     },
+    gambar: {
+      type: DataTypes.STRING,
+    },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -65,7 +68,11 @@ const BarangKeluar = db.define(
   }
 );
 
-Users.hasMany(BarangKeluar);
+
 BarangKeluar.belongsTo(Users, { foreignKey: "userId" });
+Users.hasMany(BarangKeluar, { foreignKey: "userId" });
+
+BarangKeluar.hasMany(TerimaBarang, { foreignKey: "barangKeluarId" });
+TerimaBarang.belongsTo(BarangKeluar, { foreignKey: "barangKeluarId" });
 
 export default BarangKeluar;

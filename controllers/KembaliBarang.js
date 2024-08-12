@@ -1,4 +1,5 @@
 import KembaliBarang from "../models/KembaliBarangModel.js";
+import BarangMasuk from "../models/BarangMasukModel.js";
 import User from "../models/UserModel.js";
 import { Op } from "sequelize";
 
@@ -14,6 +15,7 @@ export const getKembaliBarang = async (req, res) => {
           "barang",
           "jumlah",
           "kepada",
+          "gambar",
         ],
         include: [
           {
@@ -31,6 +33,7 @@ export const getKembaliBarang = async (req, res) => {
           "barang",
           "jumlah",
           "kepada",
+          "gambar",
         ],
         where: {
           userId: req.userId,
@@ -68,6 +71,7 @@ export const getKembaliBarangById = async (req, res) => {
           "barang",
           "jumlah",
           "kepada",
+          "gambar",
         ],
         where: {
           id: kembaliBarang.id,
@@ -88,6 +92,7 @@ export const getKembaliBarangById = async (req, res) => {
           "barang",
           "jumlah",
           "kepada",
+          "gambar",
         ],
         where: {
           [Op.and]: [{ id: kembaliBarang.id }, { userId: req.userId }],
@@ -108,15 +113,48 @@ export const getKembaliBarangById = async (req, res) => {
 
 export const createKembaliBarang = async (req, res) => {
   const { kodeBarang, tanggal, barang, jumlah, kepada } = req.body;
+  const gambar = req.file ? req.file.path : null;
   try {
-    await KembaliBarang.create({
+    const userPengirim = await User.findOne({
+      where: {
+        id: req.userId,
+      },
+    });
+
+    if (!userPengirim) {
+      return res.status(404).json({ msg: "User pengirim tidak ditemukan" });
+    }
+
+    const userTujuan = await User.findOne({
+      where: {
+        username: kepada,
+      },
+    });
+
+    if (!userTujuan) {
+      return res.status(404).json({ msg: "User tujuan tidak ditemukan" });
+    }
+
+    const kembaliBarang = await KembaliBarang.create({
       kodeBarang: kodeBarang,
       tanggal: tanggal,
       barang: barang,
       jumlah: jumlah,
       kepada: kepada,
+      gambar: gambar,
       userId: req.userId,
     });
+
+    await BarangMasuk.create({
+      kodeBarang: kembaliBarang.kodeBarang,
+      tanggal: kembaliBarang.tanggal,
+      barang: kembaliBarang.barang,
+      jumlah: kembaliBarang.jumlah,
+      dari: userPengirim.username,
+      gambar: kembaliBarang.gambar,
+      userId: userTujuan.id,
+    });
+
     res.status(201).json({ msg: "Data Created Successfuly" });
   } catch (error) {
     res.status(500).json({ msg: error.message });
@@ -133,9 +171,10 @@ export const updateKembaliBarang = async (req, res) => {
     if (!kembaliBarang)
       return res.status(404).json({ msg: "Data tidak ditemukan" });
     const { kodeBarang, tanggal, barang, jumlah, kepada } = req.body;
+    const gambar = req.file ? req.file.path : kembaliBarang.gambar;
     if (req.role === "admin") {
       await KembaliBarang.update(
-        { kodeBarang, tanggal, barang, jumlah, kepada },
+        { kodeBarang, tanggal, barang, jumlah, kepada, gambar },
         {
           where: {
             id: kembaliBarang.id,
@@ -146,7 +185,7 @@ export const updateKembaliBarang = async (req, res) => {
       if (req.userId !== kembaliBarang.userId)
         return res.status(403).json({ msg: "Akses terlarang" });
       await KembaliBarang.update(
-        { kodeBarang, tanggal, barang, jumlah, kepada },
+        { kodeBarang, tanggal, barang, jumlah, kepada, gambar },
         {
           where: {
             [Op.and]: [{ id: kembaliBarang.id }, { userId: req.userId }],
@@ -169,7 +208,7 @@ export const deleteKembaliBarang = async (req, res) => {
     });
     if (!kembaliBarang)
       return res.status(404).json({ msg: "Data tidak ditemukan" });
-    const { kodeBarang, tanggal, barang, jumlah, kepada } = req.body;
+    const { kodeBarang, tanggal, barang, jumlah, kepada, gambar } = req.body;
     if (req.role === "admin") {
       await KembaliBarang.destroy({
         where: {

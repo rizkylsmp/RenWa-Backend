@@ -1,6 +1,7 @@
 import { Sequelize } from "sequelize";
 import db from "../config/Database.js";
 import Users from "./UserModel.js";
+import BarangMasuk from "./BarangMasukModel.js";
 
 const { DataTypes } = Sequelize;
 
@@ -51,6 +52,9 @@ const KembaliBarang = db.define(
         notEmpty: true,
       },
     },
+    gambar: {
+      type: DataTypes.STRING,
+    },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -64,7 +68,10 @@ const KembaliBarang = db.define(
   }
 );
 
-Users.hasMany(KembaliBarang);
 KembaliBarang.belongsTo(Users, { foreignKey: "userId" });
+Users.hasMany(KembaliBarang, { foreignKey: "userId" });
+
+KembaliBarang.hasMany(BarangMasuk, { foreignKey: "kembaliBarangId" });
+BarangMasuk.belongsTo(KembaliBarang, { foreignKey: "kembaliBarangId" });
 
 export default KembaliBarang;

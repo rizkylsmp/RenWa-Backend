@@ -51,6 +51,9 @@ const TerimaBarang = db.define(
         notEmpty: true,
       },
     },
+    gambar: {
+      type: DataTypes.STRING,
+    },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,

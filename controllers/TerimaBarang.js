@@ -15,6 +15,7 @@ export const getTerimaBarang = async (req, res) => {
           "barang",
           "jumlah",
           "dari",
+          "gambar",
         ],
         include: [
           {
@@ -32,6 +33,7 @@ export const getTerimaBarang = async (req, res) => {
           "barang",
           "jumlah",
           "dari",
+          "gambar",
         ],
         where: {
           userId: req.userId,
@@ -69,6 +71,7 @@ export const getTerimaBarangById = async (req, res) => {
           "barang",
           "jumlah",
           "dari",
+          "gambar",
         ],
         where: {
           id: terimaBarang.id,
@@ -89,6 +92,7 @@ export const getTerimaBarangById = async (req, res) => {
           "barang",
           "jumlah",
           "dari",
+          "gambar",
         ],
         where: {
           [Op.and]: [{ id: terimaBarang.id }, { userId: req.userId }],
@@ -109,6 +113,7 @@ export const getTerimaBarangById = async (req, res) => {
 
 export const createTerimaBarang = async (req, res) => {
   const { kodeBarang, tanggal, barang, jumlah, dari } = req.body;
+  const gambar = req.file ? req.file.path : null;
   try {
 
     await TerimaBarang.create({
@@ -117,6 +122,7 @@ export const createTerimaBarang = async (req, res) => {
       barang: barang,
       jumlah: jumlah,
       dari: dari,
+      gambar: gambar,
       userId: req.userId,
     });
     res.status(201).json({ msg: "Data Created Successfuly" });
@@ -135,9 +141,10 @@ export const updateTerimaBarang = async (req, res) => {
     if (!terimaBarang)
       return res.status(404).json({ msg: "Data tidak ditemukan" });
     const { kodeBarang, tanggal, barang, jumlah, dari } = req.body;
+    const gambar = req.file ? req.file.path : terimaBarang.gambar;
     if (req.role === "admin") {
       await TerimaBarang.update(
-        { kodeBarang, tanggal, barang, jumlah, dari },
+        { kodeBarang, tanggal, barang, jumlah, dari, gambar },
         {
           where: {
             id: terimaBarang.id,
@@ -148,7 +155,7 @@ export const updateTerimaBarang = async (req, res) => {
       if (req.userId !== terimaBarang.userId)
         return res.status(403).json({ msg: "Akses terlarang" });
       await TerimaBarang.update(
-        { kodeBarang, tanggal, barang, jumlah, dari },
+        { kodeBarang, tanggal, barang, jumlah, dari, gambar },
         {
           where: {
             [Op.and]: [{ id: terimaBarang.id }, { userId: req.userId }],
@@ -171,7 +178,7 @@ export const deleteTerimaBarang = async (req, res) => {
     });
     if (!terimaBarang)
       return res.status(404).json({ msg: "Data tidak ditemukan" });
-    const { kodeBarang, tanggal, barang, jumlah, dari } = req.body;
+    const { kodeBarang, tanggal, barang, jumlah, dari, gambar } = req.body;
     if (req.role === "admin") {
       await TerimaBarang.destroy({
         where: {

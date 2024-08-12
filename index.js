@@ -50,6 +50,9 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+app.use("/uploads", express.static("uploads"));
+
 app.use(express.json());
 
 app.use(AuthRoute);
